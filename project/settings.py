@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 from pathlib import Path
 
+
 import environ
 
 env = environ.Env(
@@ -138,3 +139,8 @@ INTERNAL_IPS = [
     '127.0.0.1',
     # ...
 ]
+
+# Configure Django App for Heroku
+import django_heroku
+django_heroku.settings(locals())
+del DATABASES['default']['OPTIONS']['sslmode']
