@@ -8,7 +8,7 @@ class Question(models.Model):
     title = models.CharField(max_length=255)
     question_ask = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
-    author_question = models.ForeignKey(User, on_delete=models.CASCADE, related_name="questions")
+    author_question = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="questions")
       
     def __str__(self):
         return f"{self.title} -  {self.author_question}"
@@ -17,7 +17,7 @@ class Question(models.Model):
 class Answer(models.Model):
     answer_response = models.TextField()
     answered_on = models.DateTimeField(auto_now_add=True)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="answers")
+    question = models.ForeignKey(Question, on_delete=models.CASCADE,  related_name="answers")
     author_answer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="response")
    
     def __str__(self):

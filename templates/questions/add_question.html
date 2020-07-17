@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+
+<div>
+  <form class="mt2 mb0 f6 fw4 ttu tracked" action="{% url 'add_question' %}" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div>
+      <button class="mt2 mb0 f6 fw4 ttu tracked oh3 f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-pink" type="submit">add question</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

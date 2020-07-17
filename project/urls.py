@@ -22,7 +22,12 @@ urlpatterns = [
     path('', question_views.home, name='home'),
     path('questions/', question_views.list_questions, name='list_questions'),
     path('questions/add/', question_views.add_question, name='add_question'),
+    path('questions/<int:pk>/', question_views.show_question, name = 'show_question'),
+    path('questions/<int:pk>/add_answer', question_views.add_answer, name="add_answer"),
+    path('questions/<int:pk>/edit/', question_views.edit_question, name='edit_question'),
+    path('questions/<int:pk>/delete/', question_views.delete_question, name='delete_question'),
     path('admin/', admin.site.urls),
+    path('accounts/', include('registration.backends.simple.urls')),
 ]
 
 if settings.DEBUG:
