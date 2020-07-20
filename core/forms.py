@@ -7,7 +7,7 @@ class QuestionForm(ModelForm):
         model = Question
         fields = [
             'title',
-            'question_ask',
+            'ask_question',
         ]
 
 

@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from .models import Question, Answer 
-import datetime
+from .models import Question, Answer
 from .forms import QuestionForm, AnswerForm
+from django.contrib.auth.decorators import login_required 
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
+import datetime
 from django.views import View
 from users.models import User
-
+from django.utils.decorators import method_decorator
 
 # Create your views here.
 def home(request):
@@ -17,6 +20,10 @@ def home(request):
   
 def list_questions(request):
     questions = request.user.questions.all()
+    answers = request.user.response.all()
+    for answer in answers:
+        list1 = []
+        list1.append(answer.answer_response)
     return render(request, 'questions/list_questions.html', {'questions': questions})
 
   
@@ -78,3 +85,14 @@ def add_answer(request, pk):
             answer.save()
             return redirect(to='show_question', pk=pk)
     return render(request, 'questions/add_answer.html', {'form': form, 'question': question,})
+
+@method_decorator(csrf_exempt, name="dispatch")
+def favorite_questions(request, pk):
+    user = request.user
+    question = get_object_or_404(Question, pk=pk)
+    if question in user.favorite_questions.all():
+        user.favorite_questions.remove(question)
+        return JsonResponse({"favorite": False})
+    else:
+        user.favorite_questions.add(question)
+        return JsonResponse({"favorite": True})

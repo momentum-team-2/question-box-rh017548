@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'django_extensions',
     'registration',
+    'markdownify',
 
     # Project-specific
     'users',
@@ -145,6 +146,28 @@ INTERNAL_IPS = [
 ACCOUNT_ACTIVATION_DAYS = 14
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+MARKDOWNIFY_WHITELIST_TAGS = [
+  'a',
+  'abbr',
+  'acronym',
+  'b',
+  'blockquote',
+  'code',
+  'em',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'i',
+  'li',
+  'ol',
+  'p',
+  'strong',
+  'ul'
+]
 
 # Configure Django App for Heroku
 import django_heroku

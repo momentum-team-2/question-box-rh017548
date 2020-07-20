@@ -1,25 +1,56 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+{% load markdownify %}
 <div class="mt2 mb0 f3 fw4 ttu tracked tc mw7 center mt4">
     <div>
-        {{ question.title}}<br>
-        {{ question.question_ask}}
+        <div>
+        {{ question.title}} 
+            {% if question in user.favorite_questions.all %}
+            <a id="toggle-favorite" data-question-id = "{{ question.pk }}" class="no-underline pointer dib grow" >&#9733;</a>
+            {% else %}
+            <a id="toggle-favorite" data-question-id = "{{ question.pk }}" class="no-underline pointer dib grow" >&#9734;</a>
+            {% endif %}
+        </a><br>
+        </div>
+        <div>
+        {{ question.ask_question|markdownify}}
+        </div>
     </div>
     
     {% for answer in answers %}
     <div> 
         <ul style='list-style-type: none'>
-            <li>{{ answer.answer_response}}</li> 
+            <li>{{ answer.answer_response|markdownify}}</li> 
         </ul>
-        {% endfor %}
-        
-<br>   
-    
     </div>
+    {% endfor %}
+        
+  
+    
+    
 
     
     
 </div>
+
+<script>
+    const toggleFavoriteLink = document.querySelector("#toggle-favorite")
+    toggleFavoriteLink.addEventListener('click', function (e) {
+      e.preventDefault()
+      const questionId = toggleFavoriteLink.dataset.questionId
+      fetch(`/questions/${questionId}/favorite/`, {
+          method: 'POST'
+      })
+      .then(res => res.json())
+      .then(data => {
+          if (data.favorite) {
+              toggleFavoriteLink.innerHTML = '&#9733;'
+        } else {
+      toggleFavoriteLink.innerHTML = '&#9734;'
+        }
+      })
+  
+    })
+  </script>
 {% endblock %}

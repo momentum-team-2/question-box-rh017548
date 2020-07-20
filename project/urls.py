@@ -23,6 +23,7 @@ urlpatterns = [
     path('questions/', question_views.list_questions, name='list_questions'),
     path('questions/add/', question_views.add_question, name='add_question'),
     path('questions/<int:pk>/', question_views.show_question, name = 'show_question'),
+    path('questions/<int:pk>/favorite/', question_views.favorite_questions, name='favorite_question'),
     path('questions/<int:pk>/add_answer', question_views.add_answer, name="add_answer"),
     path('questions/<int:pk>/edit/', question_views.edit_question, name='edit_question'),
     path('questions/<int:pk>/delete/', question_views.delete_question, name='delete_question'),
