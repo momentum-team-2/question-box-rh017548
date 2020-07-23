@@ -3,6 +3,7 @@ from django.contrib import messages
 from .models import Question, Answer
 from .forms import QuestionForm, AnswerForm
 from django.contrib.auth.decorators import login_required 
+from django.db.models import Q
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
@@ -10,6 +11,7 @@ import datetime
 from django.views import View
 from users.models import User
 from django.utils.decorators import method_decorator
+from django.contrib.postgres.search import SearchVector
 
 # Create your views here.
 def home(request):
@@ -17,23 +19,23 @@ def home(request):
         return redirect('list_questions')
     return render(request, 'questions/home.html')
 
-  
+@login_required 
 def list_questions(request):
-    questions = request.user.questions.all()
+    questions = Question.objects.all()
     answers = request.user.response.all()
     for answer in answers:
         list1 = []
         list1.append(answer.answer_response)
     return render(request, 'questions/list_questions.html', {'questions': questions})
 
-  
+@login_required  
 def show_question(request, pk):
-    question = get_object_or_404(request.user.questions, pk=pk)
+    question = get_object_or_404(Question.objects.all(), pk=pk)
     form = AnswerForm()
     answers = question.answers.order_by('answered_on')
     return render(request, 'questions/show_question.html', {'question': question, 'pk': pk, 'form': form, 'answers': answers})
 
-  
+@login_required  
 def add_question(request):
     if request.method == 'GET':
         form = QuestionForm()
@@ -46,7 +48,7 @@ def add_question(request):
             return redirect(to='list_questions')
     return render(request, 'questions/add_question.html', {'form': form})
 
-
+@login_required
 def edit_question(request, pk):
     question = get_object_or_404(request.user.questions, pk=pk)
     if request.method == 'POST':
@@ -59,7 +61,7 @@ def edit_question(request, pk):
 
     return render(request, 'questions/edit_question.html', {'form': form, 'question': question})
 
-
+@login_required
 def delete_question(request, pk):
     question = get_object_or_404(request.user.questions, pk=pk)
     if request.method == 'POST':
@@ -86,7 +88,9 @@ def add_answer(request, pk):
             return redirect(to='show_question', pk=pk)
     return render(request, 'questions/add_answer.html', {'form': form, 'question': question,})
 
-@method_decorator(csrf_exempt, name="dispatch")
+@login_required
+@csrf_exempt
+@require_POST
 def favorite_questions(request, pk):
     user = request.user
     question = get_object_or_404(Question, pk=pk)
@@ -96,3 +100,11 @@ def favorite_questions(request, pk):
     else:
         user.favorite_questions.add(question)
         return JsonResponse({"favorite": True})
+
+def search_questions(request):
+    query = request.GET.get('q')
+    if query is not None:
+        questions = Question.objects.annotate(search=SearchVector("title", "ask_question", "author_question",)).filter(search=query).distinct("id").order_by("-pk")
+    else:
+        questions = None
+    return render(request, 'questions/search_questions.html', {"questions": questions, "query": query or ""})

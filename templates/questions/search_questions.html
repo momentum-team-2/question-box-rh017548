@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+
+<form action="{% url 'search_questions' %}" method="GET">
+  <input type="search" name="q" placeholder="Search all questions" class="pa2 w-100 br4" value="{{ query }}">
+  <p>
+    <button class="mt2 mb0 f6 fw4 ttu tracked oh3 f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-pink" type="submit">Search</button>
+  </p>
+</form>
+{% if questions is not None %}
+<div>
+  {% for question in questions %}
+    <a class="black-90 mt2 mb0 f3 fw4 ttu tracked mw7  mt4" href="{% url 'show_question' pk=question.pk %}">{{ question.title }}</a><br>
+  {% empty %}
+    <p>There are no questions that match that query.</p>
+  {% endfor %}
+</div>
+{% endif %}
+<br>
+<p>
+    <i class="fa fa-arrow-left"></i>
+    <a class="black-90" style="text-decoration:none" href="{% url 'list_questions' %}">back to all questions</a>
+</p>
+{% endblock %}
+

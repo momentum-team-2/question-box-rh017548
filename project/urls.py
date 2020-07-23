@@ -26,7 +26,9 @@ urlpatterns = [
     path('questions/<int:pk>/favorite/', question_views.favorite_questions, name='favorite_question'),
     path('questions/<int:pk>/add_answer', question_views.add_answer, name="add_answer"),
     path('questions/<int:pk>/edit/', question_views.edit_question, name='edit_question'),
+    path('questions/search_questions', question_views.search_questions, name="search_questions"),
     path('questions/<int:pk>/delete/', question_views.delete_question, name='delete_question'),
+    path('api-auth/', include('rest_framework.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('registration.backends.simple.urls')),
 ]
