@@ -17,6 +17,32 @@ from django.contrib import admin
 from django.conf import settings
 from django.urls import include, path
 from core import views as question_views
+from api.views import QuestionViewSet, AnswerViewSet
+
+question_list = QuestionViewSet.as_view({
+    'get': 'list',
+    'post': 'create'
+})
+
+question_detail = QuestionViewSet.as_view({
+    'get': 'retrieve',
+    'put': 'update',
+    'patch': 'partial_update',
+    'delete': 'destroy'
+})
+
+answer_list = AnswerViewSet.as_view({
+    'get': 'list',
+    'post': 'create'
+})
+
+answer_detail = AnswerViewSet.as_view({
+    'get': 'retrieve',
+    'put': 'update',
+    'patch': 'partial_update',
+    'delete': 'destroy'
+})
+
 
 urlpatterns = [
     path('', question_views.home, name='home'),
@@ -28,9 +54,16 @@ urlpatterns = [
     path('questions/<int:pk>/edit/', question_views.edit_question, name='edit_question'),
     path('questions/search_questions', question_views.search_questions, name="search_questions"),
     path('questions/<int:pk>/delete/', question_views.delete_question, name='delete_question'),
-    path('api-auth/', include('rest_framework.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('registration.backends.simple.urls')),
+    path('api/questions/', question_list),
+    path('api/questions/<int:pk>/', question_detail),
+    path('api/answers/', answer_list),
+    path('api/answers/<int:pk>/', answer_detail),
+]
+
+urlpatterns += [
+    path('api-auth/', include('rest_framework.urls')),
 ]
 
 if settings.DEBUG:

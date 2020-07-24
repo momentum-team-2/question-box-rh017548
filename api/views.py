@@ -12,37 +12,31 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 
 
-# Create your views here.
-
 class QuestionViewSet(viewsets.ModelViewSet):
-    
+
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly]
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        serializer.save(author_question=self.request.user)
 
 
 class AnswerViewSet(viewsets.ModelViewSet):
-   
+
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly]
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        serializer.save(author=self.request.user)
 
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def api_root(request, format=None):
     return Response({
         'users': reverse('user-list', request=request, format=format),

@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'registration',
     'markdownify',
     'rest_framework',
+    # 'api.apps.ApiConfig',
 
     # Project-specific
     'users',
